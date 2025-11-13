@@ -13,7 +13,7 @@ const Header = () => {
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <ShoppingBag className="h-6 w-6 text-primary" />
             <span className="text-xl font-bold text-foreground">
-              {t('Сибирские Дары', 'Siberian Treasures')}
+              {t('Русские Матрёшки', 'Russian Matryoshka')}
             </span>
           </Link>
 

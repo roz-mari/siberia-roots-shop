@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import heroTaiga from '@/assets/hero-taiga.jpg';
+import heroMatryoshka from '@/assets/hero-matryoshka.jpg';
 
 const Home = () => {
   const { t } = useLanguage();
@@ -17,18 +17,18 @@ const Home = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative min-h-[70vh] flex items-center justify-center bg-gradient-to-br from-primary to-primary/80 text-primary-foreground overflow-hidden">
-        <div className="absolute inset-0 opacity-30">
-          <img src={heroTaiga} alt="Siberian Taiga" className="w-full h-full object-cover" />
+      <section className="relative min-h-[70vh] flex items-center justify-center bg-gradient-to-br from-primary to-accent text-primary-foreground overflow-hidden">
+        <div className="absolute inset-0 opacity-40">
+          <img src={heroMatryoshka} alt="Russian Matryoshka" className="w-full h-full object-cover" />
         </div>
         <div className="container mx-auto px-4 py-20 relative z-10 text-center animate-fade-in">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            {t('Сибирские Дары', 'Siberian Treasures')}
+            {t('Русские Матрёшки', 'Russian Matryoshka')}
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-primary-foreground/90 max-w-2xl mx-auto">
             {t(
-              'Натуральные продукты из самого сердца Сибири и Новосибирска',
-              'Natural products from the heart of Siberia and Novosibirsk'
+              'Традиционные матрёшки ручной работы — частичка русской души',
+              'Traditional handcrafted matryoshka dolls - a piece of Russian spirit'
             )}
           </p>
           <Button size="lg" variant="secondary" asChild className="gap-2">
@@ -45,12 +45,12 @@ const Home = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 animate-fade-in">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              {t('Популярные товары', 'Popular Products')}
+              {t('Популярные матрёшки', 'Popular Matryoshkas')}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               {t(
-                'Откройте для себя лучшее из нашей коллекции сибирских деликатесов',
-                'Discover the best from our collection of Siberian delicacies'
+                'Откройте для себя красоту традиционных русских матрёшек',
+                'Discover the beauty of traditional Russian matryoshka dolls'
               )}
             </p>
           </div>
@@ -77,27 +77,27 @@ const Home = () => {
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-8 animate-fade-in">
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-                {t('Наша История', 'Our Story')}
+                {t('История матрёшки', 'History of Matryoshka')}
               </h2>
             </div>
             
             <div className="prose prose-lg max-w-none text-foreground">
               <p className="text-lg text-muted-foreground leading-relaxed mb-6">
                 {t(
-                  'Сибирь — это край бескрайних лесов, чистых озёр и уникальной природы. Здесь, среди тайги и снежных просторов, рождаются продукты с особым вкусом и пользой.',
-                  'Siberia is a land of endless forests, pristine lakes, and unique nature. Here, amidst the taiga and snowy expanses, products with a special taste and benefit are born.'
+                  'Матрёшка — самый известный символ России. Эта деревянная кукла-сувенир появилась в конце XIX века и сразу завоевала сердца людей по всему миру.',
+                  'Matryoshka is the most famous symbol of Russia. This wooden souvenir doll appeared at the end of the 19th century and immediately won the hearts of people around the world.'
                 )}
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed mb-6">
                 {t(
-                  'Новосибирск, сердце Сибири, — место, где традиции встречаются с современностью. Мы собираем лучшие дары природы и делимся ими с вами.',
-                  'Novosibirsk, the heart of Siberia, is a place where traditions meet modernity. We collect the best gifts of nature and share them with you.'
+                  'Традиционная матрёшка состоит из нескольких фигурок, вложенных одна в другую. Каждая кукла расписана вручную мастерами, которые вкладывают в работу частичку своей души.',
+                  'A traditional matryoshka consists of several figures nested inside each other. Each doll is hand-painted by artisans who put a piece of their soul into their work.'
                 )}
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed">
                 {t(
-                  'Каждый продукт в нашем магазине — это частичка настоящей Сибири, созданная с любовью и заботой о вашем здоровье.',
-                  'Each product in our shop is a piece of true Siberia, created with love and care for your health.'
+                  'Сегодня матрёшка — это не только сувенир, но и произведение искусства, хранящее традиции и культуру русского народа.',
+                  'Today, matryoshka is not only a souvenir, but also a work of art that preserves the traditions and culture of the Russian people.'
                 )}
               </p>
             </div>

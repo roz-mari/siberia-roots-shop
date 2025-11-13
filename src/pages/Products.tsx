@@ -15,12 +15,12 @@ const Products = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 animate-fade-in">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              {t('Наши товары', 'Our Products')}
+              {t('Наши матрёшки', 'Our Matryoshkas')}
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               {t(
-                'Исследуйте полный ассортимент натуральных продуктов из Сибири',
-                'Explore our full range of natural products from Siberia'
+                'Исследуйте полный ассортимент традиционных русских матрёшек',
+                'Explore our full range of traditional Russian matryoshka dolls'
               )}
             </p>
           </div>
