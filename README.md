@@ -1,73 +1,116 @@
-# Welcome to your Lovable project
+# Siberia Roots Shop
 
-## Project info
+Modern React storefront for Siberian matryoshkas backed by a Java/Spring Boot API.
 
-**URL**: https://lovable.dev/projects/1c936d60-4741-4c8d-9c5b-1443d782fc69
+## Prerequisites
 
-## How can I edit this code?
+- Node.js 18+
+- npm (bundled with Node)
+- Java 17+
+- Maven 3.9+
 
-There are several ways of editing your application.
+## Backend (Spring Boot)
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/1c936d60-4741-4c8d-9c5b-1443d782fc69) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+The backend lives in `backend/` and exposes a simple catalog API.
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+# install dependencies & run the API (port 8090 by default)
+mvn -f backend/pom.xml spring-boot:run
 ```
 
-**Edit a file directly in GitHub**
+### API Endpoints
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+| Method | Path               | Description                       |
+| ------ | ------------------ | --------------------------------- |
+| GET    | `/api/products`    | List all catalog products         |
+| GET    | `/api/products/:id`| Get a single product by identifier|
 
-**Use GitHub Codespaces**
+Swagger UI is available at `http://localhost:8090/api/swagger` once the service is running.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Frontend (Vite + React)
 
-## What technologies are used for this project?
+The storefront lives in the repository root (`src/`).
 
-This project is built with:
+```sh
+npm install
+npm run dev            # runs on http://localhost:8080
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Environment Variables
 
-## How can I deploy this project?
+Create a `.env.local` (or reuse `.env`) in the project root if you need to override defaults:
 
-Simply open [Lovable](https://lovable.dev/projects/1c936d60-4741-4c8d-9c5b-1443d782fc69) and click on Share -> Publish.
+```
+VITE_API_BASE_URL=http://localhost:8090
+```
 
-## Can I connect a custom domain to my Lovable project?
+The value should point to the running backend.
 
-Yes, you can!
+## Development Workflow
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+1. Start the backend (`mvn -f backend/pom.xml spring-boot:run`).
+2. Start the frontend (`npm run dev`).
+3. Visit `http://localhost:8080` to browse the storefront.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+React Query caches catalog data automatically. If you change backend data, refresh the browser to refetch.
+
+## Testing
+
+- Backend: `mvn -f backend/pom.xml test`
+  - Coverage includes the integration suite `ProductControllerTest`, which verifies `/api/products` and `/api/products/{id}`.
+- Frontend: no tests yet; Vitest or Playwright are recommended when you add them.
+
+## Docker
+
+Build and run both services via Docker Compose:
+
+```sh
+docker compose up --build
+```
+
+- Frontend: http://localhost:8080  
+- Backend API & Swagger: http://localhost:8090/api/swagger
+
+To stop the stack: `docker compose down`
+
+### Standalone Images
+
+```sh
+# backend
+docker build -t siberia-roots-backend ./backend
+
+# frontend (override API URL if needed)
+docker build -t siberia-roots-frontend --build-arg VITE_API_BASE_URL=https://your-api ./ 
+```
+
+## Production Build (without Docker)
+
+```sh
+# build backend uber-jar
+mvn -f backend/pom.xml package
+java -jar backend/target/*.jar
+
+# build static frontend
+npm run build
+npm run preview
+```
+
+## Project Structure
+
+```
+backend/        # Spring Boot application (API and tests)
+src/            # Vite/React frontend
+docker-compose.yml
+Dockerfile      # production frontend build (Nginx)
+```
+
+## Updating Catalog Data
+
+- Catalog data lives in `backend/src/main/java/com/siberiaroots/shop/catalog/ProductCatalog.java`.
+- The frontend resolves product imagery via `imageKey` in `src/data/product-images.ts`. When you add a new product, import the asset and map the key.
+
+## Troubleshooting
+
+- **`npm run lint` fails:** run `npm install` first, then re-run lint.
+- **Maven cannot download dependencies:** ensure write permissions to `~/.m2`; in CI set a custom Maven repo directory via `MAVEN_OPTS`.
+- **Frontend cannot reach the API in Docker:** verify `VITE_API_BASE_URL` or the build arg. In `docker-compose.yml` it defaults to `http://backend:8090`.

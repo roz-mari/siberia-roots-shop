@@ -1,19 +1,33 @@
 import { useParams, Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { products } from '@/data/products';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ShoppingCart } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useToast } from '@/hooks/use-toast';
+import { useProduct } from '@/hooks/use-products';
+import { resolveProductImage } from '@/data/product-images';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const ProductDetail = () => {
   const { id } = useParams();
   const { language, t } = useLanguage();
   const { toast } = useToast();
-  const product = products.find((p) => p.id === id);
+  const { data: product, isLoading, isError } = useProduct(id);
 
-  if (!product) {
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 flex items-center justify-center">
+          <Skeleton className="h-64 w-64 rounded-2xl" />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (isError || !product) {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
@@ -44,6 +58,8 @@ const ProductDetail = () => {
     });
   };
 
+  const imageSrc = resolveProductImage(product.imageKey);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -61,7 +77,7 @@ const ProductDetail = () => {
             {/* Product Image */}
             <div className="aspect-square rounded-2xl overflow-hidden bg-secondary">
               <img
-                src={product.image}
+                src={imageSrc}
                 alt={product.name[language]}
                 className="w-full h-full object-cover"
               />

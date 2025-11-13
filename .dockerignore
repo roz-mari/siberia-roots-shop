@@ -1,0 +1,15 @@
+node_modules
+dist
+Dockerfile
+Dockerfile.dev
+.git
+.gitignore
+*.log
+backend/target
+backend/.mvn
+backend/mvnw*
+backend/Dockerfile
+backend/node_modules
+.env*
+
+

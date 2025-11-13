@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Product } from '@/data/products';
+import type { Product } from '@/types/product';
+import { resolveProductImage } from '@/data/product-images';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -10,13 +11,14 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const { language } = useLanguage();
+  const imageSrc = resolveProductImage(product.imageKey);
 
   return (
     <Card className="group overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       <Link to={`/products/${product.id}`}>
         <div className="aspect-square overflow-hidden bg-secondary">
           <img
-            src={product.image}
+            src={imageSrc}
             alt={product.name[language]}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
           />

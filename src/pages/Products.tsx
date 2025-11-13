@@ -1,11 +1,13 @@
 import { useLanguage } from '@/contexts/LanguageContext';
-import { products } from '@/data/products';
 import ProductCard from '@/components/ProductCard';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { useProducts } from '@/hooks/use-products';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const Products = () => {
   const { t } = useLanguage();
+  const { data: products, isLoading, isError } = useProducts();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -25,8 +27,19 @@ const Products = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {products.map((product) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[360px]">
+            {isLoading &&
+              Array.from({ length: 6 }).map((_, index) => (
+                <Skeleton key={index} className="h-full rounded-2xl" />
+              ))}
+
+            {isError && (
+              <div className="col-span-full text-center text-muted-foreground">
+                {t('Не удалось загрузить товары. Попробуйте позже.', 'Failed to load products. Please try again later.')}
+              </div>
+            )}
+
+            {!isLoading && !isError && products?.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>

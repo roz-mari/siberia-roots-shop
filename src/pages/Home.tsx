@@ -1,16 +1,18 @@
 import { useLanguage } from '@/contexts/LanguageContext';
-import { products } from '@/data/products';
 import ProductCard from '@/components/ProductCard';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import heroMatryoshka from '@/assets/hero-matryoshka.jpg';
+import { useProducts } from '@/hooks/use-products';
 
 const Home = () => {
   const { t } = useLanguage();
-  const featuredProducts = products.slice(0, 3);
+  const { data: products, isLoading, isError } = useProducts();
+  const featuredProducts = (products ?? []).slice(0, 3);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -55,8 +57,19 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {featuredProducts.map((product) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 min-h-[360px]">
+            {isLoading &&
+              Array.from({ length: 3 }).map((_, index) => (
+                <Skeleton key={index} className="h-full rounded-2xl" />
+              ))}
+
+            {isError && (
+              <div className="col-span-full text-center text-muted-foreground">
+                {t('Не удалось загрузить товары. Попробуйте позже.', 'Failed to load products. Please try again later.')}
+              </div>
+            )}
+
+            {!isLoading && !isError && featuredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
