@@ -16,114 +16,114 @@ export interface Product {
   };
 }
 
-import pineNutsImg from '@/assets/pine-nuts.jpg';
-import taigaHoneyImg from '@/assets/taiga-honey.jpg';
-import ivanTeaImg from '@/assets/ivan-tea.jpg';
-import pineconeJamImg from '@/assets/pinecone-jam.jpg';
-import seaBuckthornOilImg from '@/assets/sea-buckthorn-oil.jpg';
-import woodenSouvenirsImg from '@/assets/wooden-souvenirs.jpg';
+import classicMatryoshkaImg from '@/assets/classic-matryoshka.jpg';
+import siberianMatryoshkaImg from '@/assets/siberian-matryoshka.jpg';
+import modernMatryoshkaImg from '@/assets/modern-matryoshka.jpg';
+import novosibirskMatryoshkaImg from '@/assets/novosibirsk-matryoshka.jpg';
+import giftMatryoshkaImg from '@/assets/gift-matryoshka.jpg';
+import miniMatryoshkaImg from '@/assets/mini-matryoshka.jpg';
 
 export const products: Product[] = [
   {
     id: '1',
     name: {
-      ru: 'Кедровые орехи',
-      en: 'Pine Nuts'
+      ru: 'Классическая матрёшка',
+      en: 'Classic Matryoshka'
     },
     description: {
-      ru: 'Натуральные орехи из Сибири',
-      en: 'Natural Siberian pine nuts'
+      ru: 'Традиционная роспись, 7 фигур',
+      en: 'Traditional painting, set of 7 dolls'
     },
-    price: 12.50,
-    image: pineNutsImg,
+    price: 35.00,
+    image: classicMatryoshkaImg,
     category: {
-      ru: 'Орехи и семена',
-      en: 'Nuts & Seeds'
+      ru: 'Классические',
+      en: 'Classic'
     }
   },
   {
     id: '2',
     name: {
-      ru: 'Тайга мёд',
-      en: 'Taiga Honey'
+      ru: 'Сибирская матрёшка',
+      en: 'Siberian Matryoshka'
     },
     description: {
-      ru: 'Мёд из диких сибирских трав',
-      en: 'Wild taiga mountain honey'
+      ru: 'Вдохновлена сибирскими узорами и природой',
+      en: 'Inspired by Siberian patterns and nature'
     },
-    price: 9.90,
-    image: taigaHoneyImg,
+    price: 42.00,
+    image: siberianMatryoshkaImg,
     category: {
-      ru: 'Мёд',
-      en: 'Honey'
+      ru: 'Тематические',
+      en: 'Themed'
     }
   },
   {
     id: '3',
     name: {
-      ru: 'Чай Иван-чай',
-      en: 'Ivan Tea'
+      ru: 'Современная матрёшка',
+      en: 'Modern Matryoshka'
     },
     description: {
-      ru: 'Ферментированный чай из Новосибирской области',
-      en: 'Fermented Siberian herbal tea'
+      ru: 'Минималистичный дизайн, яркие цвета',
+      en: 'Minimalist design with bright colors'
     },
-    price: 7.50,
-    image: ivanTeaImg,
+    price: 29.90,
+    image: modernMatryoshkaImg,
     category: {
-      ru: 'Чай',
-      en: 'Tea'
+      ru: 'Современные',
+      en: 'Modern'
     }
   },
   {
     id: '4',
     name: {
-      ru: 'Варенье из шишек',
-      en: 'Pinecone Jam'
+      ru: 'Матрешка "Новосибирск"',
+      en: '"Novosibirsk" Matryoshka'
     },
     description: {
-      ru: 'Традиционный сибирский деликатес',
-      en: 'Traditional Siberian delicacy'
+      ru: 'Тематический набор с символами города',
+      en: 'Themed set with Novosibirsk landmarks'
     },
-    price: 11.20,
-    image: pineconeJamImg,
+    price: 39.00,
+    image: novosibirskMatryoshkaImg,
     category: {
-      ru: 'Варенье',
-      en: 'Jam'
+      ru: 'Тематические',
+      en: 'Themed'
     }
   },
   {
     id: '5',
     name: {
-      ru: 'Облепиховое масло',
-      en: 'Sea Buckthorn Oil'
+      ru: 'Матрешка-подарочный набор',
+      en: 'Gift Matryoshka Set'
     },
     description: {
-      ru: 'Богато витамином C',
-      en: 'Rich in vitamin C'
+      ru: 'Подарочная коробка, открытка и матрёшка',
+      en: 'Gift box, postcard and matryoshka doll'
     },
-    price: 14.00,
-    image: seaBuckthornOilImg,
+    price: 49.00,
+    image: giftMatryoshkaImg,
     category: {
-      ru: 'Масла',
-      en: 'Oils'
+      ru: 'Подарочные наборы',
+      en: 'Gift Sets'
     }
   },
   {
     id: '6',
     name: {
-      ru: 'Сувениры из дерева',
-      en: 'Wooden Souvenirs'
+      ru: 'Набор мини-матрёшек',
+      en: 'Mini Matryoshka Set'
     },
     description: {
-      ru: 'Ручная работа местных мастеров',
-      en: 'Handmade by local artisans'
+      ru: 'Маленькие фигурки для декора',
+      en: 'Small decorative matryoshka set'
     },
-    price: 15.00,
-    image: woodenSouvenirsImg,
+    price: 24.50,
+    image: miniMatryoshkaImg,
     category: {
-      ru: 'Сувениры',
-      en: 'Souvenirs'
+      ru: 'Мини',
+      en: 'Mini'
     }
   }
 ];

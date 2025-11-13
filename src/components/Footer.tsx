@@ -10,12 +10,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <h3 className="text-lg font-semibold text-foreground mb-4">
-              {t('Сибирские Дары', 'Siberian Treasures')}
+              {t('Русские Матрёшки', 'Russian Matryoshka')}
             </h3>
             <p className="text-sm text-muted-foreground">
               {t(
-                'Натуральные продукты из сердца Сибири',
-                'Natural products from the heart of Siberia'
+                'Традиционные русские матрёшки ручной работы',
+                'Traditional handcrafted Russian nesting dolls'
               )}
             </p>
           </div>
@@ -74,7 +74,7 @@ const Footer = () => {
         </div>
 
         <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
-          <p>© 2024 {t('Сибирские Дары', 'Siberian Treasures')}. {t('Все права защищены', 'All rights reserved')}.</p>
+          <p>© 2024 {t('Русские Матрёшки', 'Russian Matryoshka')}. {t('Все права защищены', 'All rights reserved')}.</p>
         </div>
       </div>
     </footer>

@@ -93,8 +93,8 @@ const ProductDetail = () => {
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">
                   {t(
-                    'Этот продукт собран вручную в экологически чистых районах Сибири. Мы гарантируем качество и натуральность каждого товара. Без химических добавок и консервантов.',
-                    'This product is hand-picked in ecologically clean areas of Siberia. We guarantee the quality and naturalness of each item. No chemical additives or preservatives.'
+                    'Каждая матрёшка создана вручную опытными мастерами. Традиционная роспись, качественная древесина и внимание к деталям делают каждую куклу уникальной. Матрёшка станет прекрасным подарком и украшением интерьера.',
+                    'Each matryoshka is handcrafted by experienced artisans. Traditional painting, quality wood, and attention to detail make each doll unique. Matryoshka will make a wonderful gift and interior decoration.'
                   )}
                 </p>
               </div>
