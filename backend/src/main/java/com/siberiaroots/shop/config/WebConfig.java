@@ -1,11 +1,11 @@
 package com.siberiaroots.shop.config;
 
+import java.time.Duration;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.time.Duration;
 
 @Configuration
 public class WebConfig {
@@ -18,7 +18,8 @@ public class WebConfig {
                 registry.addMapping("/api/**")
                         .allowedOriginPatterns(
                                 "http://localhost:*",
-                                "http://127.0.0.1:*"
+                                "http://127.0.0.1:*",
+                                "https://*.onrender.com"
                         )
                         .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                         .maxAge(Duration.ofHours(3).getSeconds());
