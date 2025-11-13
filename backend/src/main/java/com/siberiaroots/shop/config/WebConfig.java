@@ -19,7 +19,8 @@ public class WebConfig {
                         .allowedOriginPatterns(
                                 "http://localhost:*",
                                 "http://127.0.0.1:*",
-                                "https://*.onrender.com"
+                                "https://*.onrender.com",
+                                "https://*.vercel.app"
                         )
                         .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                         .maxAge(Duration.ofHours(3).getSeconds());
