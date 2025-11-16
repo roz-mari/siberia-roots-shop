@@ -5,6 +5,7 @@ import { ShoppingBag, Globe } from 'lucide-react';
 
 const Header = () => {
   const { language, setLanguage, t } = useLanguage();
+  const nextLang = language === 'ru' ? 'en' : language === 'en' ? 'es' : 'ru';
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
@@ -13,7 +14,7 @@ const Header = () => {
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <ShoppingBag className="h-6 w-6 text-primary" />
             <span className="text-xl font-bold text-foreground">
-              {t('Русские Матрёшки', 'Russian Matryoshka')}
+              {t('Русские Матрёшки', 'Russian Matryoshka', 'Muñecas Matrioska')}
             </span>
           </Link>
 
@@ -22,19 +23,19 @@ const Header = () => {
               to="/"
               className="text-sm font-medium text-foreground hover:text-primary transition-colors"
             >
-              {t('Главная', 'Home')}
+              {t('Главная', 'Home', 'Inicio')}
             </Link>
             <Link
               to="/products"
               className="text-sm font-medium text-foreground hover:text-primary transition-colors"
             >
-              {t('Товары', 'Products')}
+              {t('Товары', 'Products', 'Productos')}
             </Link>
             <Link
               to="/contact"
               className="text-sm font-medium text-foreground hover:text-primary transition-colors"
             >
-              {t('Контакты', 'Contact')}
+              {t('Контакты', 'Contact', 'Contacto')}
             </Link>
           </nav>
 
@@ -42,11 +43,11 @@ const Header = () => {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setLanguage(language === 'ru' ? 'en' : 'ru')}
+              onClick={() => setLanguage(nextLang as any)}
               className="gap-2"
             >
               <Globe className="h-4 w-4" />
-              {language === 'ru' ? 'EN' : 'RU'}
+              {nextLang.toUpperCase()}
             </Button>
           </div>
         </div>

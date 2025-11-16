@@ -17,12 +17,13 @@ const Products = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 animate-fade-in">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              {t('Наши матрёшки', 'Our Matryoshkas')}
+              {t('Наши матрёшки', 'Our Matryoshkas', 'Nuestras Matrioskas')}
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               {t(
                 'Исследуйте полный ассортимент традиционных русских матрёшек',
-                'Explore our full range of traditional Russian matryoshka dolls'
+                'Explore our full range of traditional Russian matryoshka dolls',
+                'Explora nuestra gama completa de tradicionales muñecas rusas matrioska'
               )}
             </p>
           </div>
@@ -35,7 +36,7 @@ const Products = () => {
 
             {isError && (
               <div className="col-span-full text-center text-muted-foreground">
-                {t('Не удалось загрузить товары. Попробуйте позже.', 'Failed to load products. Please try again later.')}
+                {t('Не удалось загрузить товары. Попробуйте позже.', 'Failed to load products. Please try again later.', 'No se pudieron cargar los productos. Inténtalo más tarde.')}
               </div>
             )}
 
