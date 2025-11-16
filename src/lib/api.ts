@@ -24,6 +24,12 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     throw new ApiError(response.status, text || response.statusText);
   }
 
+  // Handle empty responses (204 No Content, 202 Accepted)
+  const contentType = response.headers.get('content-type');
+  if (response.status === 204 || response.status === 202 || !contentType?.includes('application/json')) {
+    return undefined as T;
+  }
+
   return response.json() as Promise<T>;
 }
 
