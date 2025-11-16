@@ -3,6 +3,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { ShoppingBag, Globe, ShoppingCart } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
+import { Link as RouterLink } from 'react-router-dom';
 
 const Header = () => {
   const { language, setLanguage, t } = useLanguage();
@@ -32,6 +33,12 @@ const Header = () => {
               className="text-sm font-medium text-foreground hover:text-primary transition-colors"
             >
               {t('Товары', 'Products', 'Productos')}
+            </Link>
+            <Link
+              to="/register"
+              className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+            >
+              {t('Регистрация', 'Register', 'Registrarse')}
             </Link>
             <Link
               to="/contact"
