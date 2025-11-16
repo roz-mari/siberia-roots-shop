@@ -33,6 +33,16 @@ public class ContactService {
                 %s
                 """.formatted(request.name(), request.email(), request.message()));
         mailSender.send(message);
+
+        // Auto-acknowledgement to the sender
+        if (request.email() != null && !request.email().isBlank()) {
+            SimpleMailMessage ack = new SimpleMailMessage();
+            ack.setFrom(mailFrom);
+            ack.setTo(request.email());
+            ack.setSubject("We received your message");
+            ack.setText("Thank you, we received your message and will get back to you soon.");
+            mailSender.send(ack);
+        }
     }
 }
 
