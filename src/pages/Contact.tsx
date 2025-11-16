@@ -23,10 +23,11 @@ const Contact = () => {
     e.preventDefault();
     
     toast({
-      title: t('Сообщение отправлено!', 'Message sent!'),
+      title: t('Сообщение отправлено!', 'Message sent!', '¡Mensaje enviado!'),
       description: t(
         'Мы свяжемся с вами в ближайшее время.',
-        'We will contact you as soon as possible.'
+        'We will contact you as soon as possible.',
+        'Nos pondremos en contacto contigo lo antes posible.'
       ),
     });
 
@@ -48,12 +49,13 @@ const Contact = () => {
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center mb-12 animate-fade-in">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              {t('Свяжитесь с нами', 'Contact Us')}
+              {t('Свяжитесь с нами', 'Contact Us', 'Contáctanos')}
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               {t(
                 'Есть вопросы? Мы будем рады вам помочь!',
-                'Have questions? We are happy to help!'
+                'Have questions? We are happy to help!',
+                '¿Tienes preguntas? ¡Estamos encantados de ayudarte!'
               )}
             </p>
           </div>
@@ -63,12 +65,13 @@ const Contact = () => {
             <Card className="animate-fade-in">
               <CardHeader>
                 <CardTitle>
-                  {t('Отправить сообщение', 'Send a Message')}
+                  {t('Отправить сообщение', 'Send a Message', 'Enviar un mensaje')}
                 </CardTitle>
                 <CardDescription>
                   {t(
                     'Заполните форму, и мы ответим вам как можно скорее',
-                    'Fill out the form and we will respond as soon as possible'
+                    'Fill out the form and we will respond as soon as possible',
+                    'Completa el formulario y te responderemos lo antes posible'
                   )}
                 </CardDescription>
               </CardHeader>
@@ -76,7 +79,7 @@ const Contact = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">
                     <Label htmlFor="name">
-                      {t('Имя', 'Name')}
+                      {t('Имя', 'Name', 'Nombre')}
                     </Label>
                     <Input
                       id="name"
@@ -84,13 +87,13 @@ const Contact = () => {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      placeholder={t('Ваше имя', 'Your name')}
+                      placeholder={t('Ваше имя', 'Your name', 'Tu nombre')}
                     />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="email">
-                      {t('Email', 'Email')}
+                      {t('Email', 'Email', 'Correo')}
                     </Label>
                     <Input
                       id="email"
@@ -99,13 +102,13 @@ const Contact = () => {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      placeholder={t('ваш@email.com', 'your@email.com')}
+                      placeholder={t('ваш@email.com', 'your@email.com', 'tu@email.com')}
                     />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="message">
-                      {t('Сообщение', 'Message')}
+                      {t('Сообщение', 'Message', 'Mensaje')}
                     </Label>
                     <Textarea
                       id="message"
@@ -114,12 +117,12 @@ const Contact = () => {
                       onChange={handleChange}
                       required
                       rows={5}
-                      placeholder={t('Ваше сообщение...', 'Your message...')}
+                      placeholder={t('Ваше сообщение...', 'Your message...', 'Tu mensaje...')}
                     />
                   </div>
 
                   <Button type="submit" className="w-full" size="lg">
-                    {t('Отправить', 'Send')}
+                    {t('Отправить', 'Send', 'Enviar')}
                   </Button>
                 </form>
               </CardContent>
@@ -135,12 +138,13 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-foreground mb-1">
-                        {t('Адрес', 'Address')}
+                        {t('Адрес', 'Address', 'Dirección')}
                       </h3>
                       <p className="text-muted-foreground">
                         {t(
                           'Новосибирск, Россия',
-                          'Novosibirsk, Russia'
+                          'Novosibirsk, Russia',
+                          'Novosibirsk, Rusia'
                         )}
                       </p>
                     </div>
@@ -156,7 +160,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-foreground mb-1">
-                        {t('Email', 'Email')}
+                        {t('Email', 'Email', 'Correo')}
                       </h3>
                       <p className="text-muted-foreground">
                         info@siberian-treasures.com
@@ -174,7 +178,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-foreground mb-1">
-                        {t('Телефон', 'Phone')}
+                        {t('Телефон', 'Phone', 'Teléfono')}
                       </h3>
                       <p className="text-muted-foreground">
                         +7 (383) 123-45-67
@@ -187,11 +191,11 @@ const Contact = () => {
               <Card className="bg-secondary/30">
                 <CardContent className="pt-6">
                   <h3 className="font-semibold text-foreground mb-3">
-                    {t('Часы работы', 'Working Hours')}
+                    {t('Часы работы', 'Working Hours', 'Horario')}
                   </h3>
                   <div className="space-y-2 text-muted-foreground">
-                    <p>{t('Пн-Пт: 9:00 - 18:00', 'Mon-Fri: 9:00 AM - 6:00 PM')}</p>
-                    <p>{t('Сб-Вс: Выходной', 'Sat-Sun: Closed')}</p>
+                    <p>{t('Пн-Пт: 9:00 - 18:00', 'Mon-Fri: 9:00 AM - 6:00 PM', 'Lun-Vie: 9:00 - 18:00')}</p>
+                    <p>{t('Сб-Вс: Выходной', 'Sat-Sun: Closed', 'Sáb-Dom: Cerrado')}</p>
                   </div>
                 </CardContent>
               </Card>
