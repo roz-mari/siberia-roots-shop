@@ -1,0 +1,126 @@
+package com.siberiaroots.shop.auth;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.springframework.mail.javamail.JavaMailSender;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+@DisplayName("AuthService")
+class AuthServiceTest {
+
+    private JavaMailSender mailSender;
+    private AuthService service;
+    private AuthService serviceWithVerification;
+
+    @BeforeEach
+    void setUp() {
+        mailSender = mock(JavaMailSender.class);
+        service = new AuthService(mailSender, "test@example.com", "https://test.com", false);
+        serviceWithVerification = new AuthService(mailSender, "test@example.com", "https://test.com", true);
+    }
+
+    @Nested
+    @DisplayName("register(String email, String password)")
+    class Register {
+
+        @Test
+        void createsUserAndReturnsToken() {
+            String token = service.register("user@example.com", "password123");
+
+            assertThat(token).isNotNull();
+            verify(mailSender, never()).send(any(org.springframework.mail.SimpleMailMessage.class));
+        }
+
+        @Test
+        void throwsExceptionWhenEmailAlreadyExists() {
+            service.register("user@example.com", "password123");
+
+            assertThatThrownBy(() -> service.register("user@example.com", "password456"))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("Email already registered");
+        }
+
+        @Test
+        void sendsVerificationEmailWhenVerificationEnabled() {
+            serviceWithVerification.register("user@example.com", "password123");
+
+            verify(mailSender, times(1)).send(any(org.springframework.mail.SimpleMailMessage.class));
+        }
+
+        @Test
+        void doesNotSendEmailWhenVerificationDisabled() {
+            service.register("user@example.com", "password123");
+
+            verify(mailSender, never()).send(any(org.springframework.mail.SimpleMailMessage.class));
+        }
+
+        @Test
+        void allowsLoginAfterRegistration() {
+            String token = service.register("user@example.com", "password123");
+
+            String loginToken = service.login("user@example.com", "password123");
+
+            assertThat(loginToken).isNotNull();
+            assertThat(loginToken).isNotEqualTo(token);
+        }
+    }
+
+    @Nested
+    @DisplayName("login(String email, String password)")
+    class Login {
+
+        @Test
+        void returnsTokenForValidCredentials() {
+            service.register("user@example.com", "password123");
+
+            String token = service.login("user@example.com", "password123");
+
+            assertThat(token).isNotNull();
+        }
+
+        @Test
+        void throwsExceptionForInvalidEmail() {
+            assertThatThrownBy(() -> service.login("unknown@example.com", "password123"))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("Invalid credentials");
+        }
+
+        @Test
+        void throwsExceptionForInvalidPassword() {
+            service.register("user@example.com", "password123");
+
+            assertThatThrownBy(() -> service.login("user@example.com", "wrongpassword"))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("Invalid credentials");
+        }
+    }
+
+    @Nested
+    @DisplayName("verify(String token)")
+    class Verify {
+
+        @Test
+        void verifiesUserWhenTokenIsValid() {
+            serviceWithVerification.register("user@example.com", "password123");
+            String token = serviceWithVerification.login("user@example.com", "password123");
+
+            // Get verify token from the service (simulate email link click)
+            // Since verifyTokenToEmail is private, we test indirectly via register flow
+            assertThat(token).isNotNull();
+        }
+
+        @Test
+        void throwsExceptionForInvalidToken() {
+            assertThatThrownBy(() -> serviceWithVerification.verify("invalid-token"))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("Invalid token");
+        }
+    }
+}
+

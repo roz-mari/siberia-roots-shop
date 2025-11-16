@@ -12,6 +12,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Tag(name = "Auth", description = "Registration and login (in-memory demo)")
 @RestController
 @RequestMapping("/api/auth")
@@ -43,6 +45,12 @@ public class AuthController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "text/plain; charset=UTF-8");
         return new ResponseEntity<>("Email verified. You can close this page.", headers, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("error", ex.getMessage()));
     }
 }
 
