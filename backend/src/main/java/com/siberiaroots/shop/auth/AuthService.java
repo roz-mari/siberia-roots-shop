@@ -1,5 +1,9 @@
 package com.siberiaroots.shop.auth;
 
+import com.siberiaroots.shop.exception.EmailAlreadyExistsException;
+import com.siberiaroots.shop.exception.InvalidCredentialsException;
+import com.siberiaroots.shop.exception.InvalidTokenException;
+import com.siberiaroots.shop.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -35,7 +39,7 @@ public class AuthService {
 
     public String register(String email, String rawPassword) {
         if (emailToUser.containsKey(email)) {
-            throw new IllegalArgumentException("Email already registered");
+            throw new EmailAlreadyExistsException(email);
         }
         String id = UUID.randomUUID().toString();
         String hash = encoder.encode(rawPassword);
@@ -57,16 +61,20 @@ public class AuthService {
     public String login(String email, String rawPassword) {
         UserAccount user = emailToUser.get(email);
         if (user == null || !encoder.matches(rawPassword, user.passwordHash())) {
-            throw new IllegalArgumentException("Invalid credentials");
+            throw new InvalidCredentialsException();
         }
         return issueToken(user);
     }
 
     public void verify(String token) {
         String email = verifyTokenToEmail.remove(token);
-        if (email == null) throw new IllegalArgumentException("Invalid token");
+        if (email == null) {
+            throw new InvalidTokenException("Invalid or expired verification token");
+        }
         UserAccount u = emailToUser.get(email);
-        if (u == null) throw new IllegalArgumentException("User not found");
+        if (u == null) {
+            throw new UserNotFoundException(email);
+        }
         UserAccount verified = new UserAccount(u.id(), u.email(), u.passwordHash(), true, null);
         emailToUser.put(email, verified);
     }

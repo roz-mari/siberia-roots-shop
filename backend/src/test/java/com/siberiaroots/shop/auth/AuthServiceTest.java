@@ -1,5 +1,9 @@
 package com.siberiaroots.shop.auth;
 
+import com.siberiaroots.shop.exception.EmailAlreadyExistsException;
+import com.siberiaroots.shop.exception.InvalidCredentialsException;
+import com.siberiaroots.shop.exception.InvalidTokenException;
+import com.siberiaroots.shop.exception.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -42,8 +46,8 @@ class AuthServiceTest {
             service.register("user@example.com", "password123");
 
             assertThatThrownBy(() -> service.register("user@example.com", "password456"))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("Email already registered");
+                    .isInstanceOf(EmailAlreadyExistsException.class)
+                    .hasMessageContaining("user@example.com");
         }
 
         @Test
@@ -87,8 +91,7 @@ class AuthServiceTest {
         @Test
         void throwsExceptionForInvalidEmail() {
             assertThatThrownBy(() -> service.login("unknown@example.com", "password123"))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("Invalid credentials");
+                    .isInstanceOf(InvalidCredentialsException.class);
         }
 
         @Test
@@ -96,8 +99,7 @@ class AuthServiceTest {
             service.register("user@example.com", "password123");
 
             assertThatThrownBy(() -> service.login("user@example.com", "wrongpassword"))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("Invalid credentials");
+                    .isInstanceOf(InvalidCredentialsException.class);
         }
     }
 
@@ -118,8 +120,7 @@ class AuthServiceTest {
         @Test
         void throwsExceptionForInvalidToken() {
             assertThatThrownBy(() -> serviceWithVerification.verify("invalid-token"))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("Invalid token");
+                    .isInstanceOf(InvalidTokenException.class);
         }
     }
 }
