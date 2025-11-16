@@ -2,6 +2,14 @@ import type { Product } from '@/types/product';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8090';
 
+const DEFAULT_HEADERS = {
+  Accept: 'application/json',
+} as const;
+
+const JSON_HEADERS = {
+  'Content-Type': 'application/json',
+} as const;
+
 class ApiError extends Error {
   status: number;
 
@@ -14,7 +22,8 @@ class ApiError extends Error {
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     headers: {
-      Accept: 'application/json',
+      ...DEFAULT_HEADERS,
+      ...init?.headers,
     },
     ...init,
   });
@@ -39,19 +48,19 @@ export const api = {
   sendContact: (data: { name: string; email: string; message: string }) =>
     request<void>('/api/contact', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: JSON_HEADERS,
       body: JSON.stringify(data),
     }),
   register: (data: { email: string; password: string }) =>
     request<{ token: string }>('/api/auth/register', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: JSON_HEADERS,
       body: JSON.stringify(data),
     }),
   login: (data: { email: string; password: string }) =>
     request<{ token: string }>('/api/auth/login', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: JSON_HEADERS,
       body: JSON.stringify(data),
     }),
 };

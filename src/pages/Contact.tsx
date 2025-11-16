@@ -9,7 +9,30 @@ import { useToast } from '@/hooks/use-toast';
 import { api } from '@/lib/api';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { LucideIcon } from 'lucide-react';
 import { Mail, MapPin, Phone } from 'lucide-react';
+
+interface ContactInfoCardProps {
+  icon: LucideIcon;
+  title: string;
+  content: string;
+}
+
+const ContactInfoCard = ({ icon: Icon, title, content }: ContactInfoCardProps) => (
+  <Card>
+    <CardContent className="pt-6">
+      <div className="flex items-start gap-4">
+        <div className="rounded-full bg-primary/10 p-3">
+          <Icon className="h-6 w-6 text-primary" />
+        </div>
+        <div>
+          <h3 className="font-semibold text-foreground mb-1">{title}</h3>
+          <p className="text-muted-foreground">{content}</p>
+        </div>
+      </div>
+    </CardContent>
+  </Card>
+);
 
 const Contact = () => {
   const { t } = useLanguage();
@@ -35,7 +58,7 @@ const Contact = () => {
         ),
       });
       setFormData({ name: '', email: '', message: '' });
-    } catch (err) {
+    } catch {
       toast({
         title: t('Ошибка отправки', 'Send error', 'Error de envío'),
         description: t(
@@ -146,63 +169,23 @@ const Contact = () => {
 
             {/* Contact Information */}
             <div className="space-y-6 animate-fade-in">
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <div className="rounded-full bg-primary/10 p-3">
-                      <MapPin className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground mb-1">
-                        {t('Адрес', 'Address', 'Dirección')}
-                      </h3>
-                      <p className="text-muted-foreground">
-                        {t(
-                          'Новосибирск, Россия',
-                          'Novosibirsk, Russia',
-                          'Novosibirsk, Rusia'
-                        )}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <ContactInfoCard
+                icon={MapPin}
+                title={t('Адрес', 'Address', 'Dirección')}
+                content={t('Новосибирск, Россия', 'Novosibirsk, Russia', 'Novosibirsk, Rusia')}
+              />
 
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <div className="rounded-full bg-primary/10 p-3">
-                      <Mail className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground mb-1">
-                        {t('Email', 'Email', 'Correo')}
-                      </h3>
-                      <p className="text-muted-foreground">
-                        info@siberian-treasures.com
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <ContactInfoCard
+                icon={Mail}
+                title={t('Email', 'Email', 'Correo')}
+                content="info@siberian-treasures.com"
+              />
 
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <div className="rounded-full bg-primary/10 p-3">
-                      <Phone className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground mb-1">
-                        {t('Телефон', 'Phone', 'Teléfono')}
-                      </h3>
-                      <p className="text-muted-foreground">
-                        +7 (383) 123-45-67
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <ContactInfoCard
+                icon={Phone}
+                title={t('Телефон', 'Phone', 'Teléfono')}
+                content="+7 (383) 123-45-67"
+              />
 
               <Card className="bg-secondary/30">
                 <CardContent className="pt-6">

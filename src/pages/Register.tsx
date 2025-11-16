@@ -12,19 +12,21 @@ const Register = () => {
   const { t } = useLanguage();
   const { register } = useAuth();
   const { toast } = useToast();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       setLoading(true);
-      await register(email, password);
+      await register(formData.email, formData.password);
       toast({ title: t('Регистрация успешна', 'Registration successful', 'Registro exitoso') });
-      setEmail('');
-      setPassword('');
-    } catch (e) {
+      setFormData({ email: '', password: '' });
+    } catch {
       toast({
         title: t('Ошибка регистрации', 'Registration error', 'Error de registro'),
         variant: 'destructive',
@@ -45,11 +47,11 @@ const Register = () => {
           <form onSubmit={onSubmit} className="space-y-4">
             <div>
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} required />
             </div>
             <div>
               <Label htmlFor="password">{t('Пароль', 'Password', 'Contraseña')}</Label>
-              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
+              <Input id="password" name="password" type="password" value={formData.password} onChange={handleChange} required minLength={6} />
             </div>
             <Button type="submit" disabled={loading} className="w-full">
               {loading ? t('Отправка...', 'Submitting...', 'Enviando...') : t('Зарегистрироваться', 'Register', 'Registrarse')}

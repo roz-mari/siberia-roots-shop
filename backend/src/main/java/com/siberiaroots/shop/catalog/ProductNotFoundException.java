@@ -5,7 +5,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 class ProductNotFoundException extends ResponseStatusException {
 
-    ProductNotFoundException(String productId) {
+    public ProductNotFoundException(String productId) {
         super(HttpStatus.NOT_FOUND, "Product with id %s not found".formatted(productId));
     }
 }
