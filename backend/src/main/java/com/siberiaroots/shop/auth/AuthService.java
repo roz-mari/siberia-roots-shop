@@ -21,13 +21,16 @@ public class AuthService {
     private final JavaMailSender mailSender;
     private final String mailFrom;
     private final String appBaseUrl;
+    private final boolean emailVerification;
 
     public AuthService(JavaMailSender mailSender,
                        @Value("${app.mail.from:no-reply@siberia-roots.local}") String mailFrom,
-                       @Value("${app.base-url:https://siberia-roots-shop.onrender.com}") String appBaseUrl) {
+                       @Value("${app.base-url:https://siberia-roots-shop.onrender.com}") String appBaseUrl,
+                       @Value("${app.auth.emailVerification:false}") boolean emailVerification) {
         this.mailSender = mailSender;
         this.mailFrom = mailFrom;
         this.appBaseUrl = appBaseUrl;
+        this.emailVerification = emailVerification;
     }
 
     public String register(String email, String rawPassword) {
@@ -36,11 +39,18 @@ public class AuthService {
         }
         String id = UUID.randomUUID().toString();
         String hash = encoder.encode(rawPassword);
-        String verifyToken = UUID.randomUUID().toString();
-        UserAccount user = new UserAccount(id, email, hash, false, verifyToken);
+        String verifyToken = emailVerification ? UUID.randomUUID().toString() : null;
+        boolean verified = !emailVerification;
+        UserAccount user = new UserAccount(id, email, hash, verified, verifyToken);
         emailToUser.put(email, user);
-        verifyTokenToEmail.put(verifyToken, email);
-        sendVerificationEmail(email, verifyToken);
+        if (emailVerification) {
+            verifyTokenToEmail.put(verifyToken, email);
+            try {
+                sendVerificationEmail(email, verifyToken);
+            } catch (Exception ignored) {
+                // If email can't be sent, keep user unverified but still allow registration to complete.
+            }
+        }
         return issueToken(user);
     }
 
