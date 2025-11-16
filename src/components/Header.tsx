@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
-import { ShoppingBag, Globe } from 'lucide-react';
+import { ShoppingBag, Globe, ShoppingCart } from 'lucide-react';
+import { useCart } from '@/contexts/CartContext';
 
 const Header = () => {
   const { language, setLanguage, t } = useLanguage();
   const nextLang = language === 'ru' ? 'en' : language === 'en' ? 'es' : 'ru';
+  const { totalItems } = useCart();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
@@ -40,6 +42,17 @@ const Header = () => {
           </nav>
 
           <div className="flex items-center gap-3">
+            <Link to="/cart" className="relative">
+              <Button variant="outline" size="sm" className="gap-2">
+                <ShoppingCart className="h-4 w-4" />
+                {t('Корзина', 'Cart', 'Carrito')}
+                {totalItems > 0 && (
+                  <span className="ml-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-xs text-primary-foreground">
+                    {totalItems}
+                  </span>
+                )}
+              </Button>
+            </Link>
             <Button
               variant="outline"
               size="sm"

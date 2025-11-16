@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useProduct } from '@/hooks/use-products';
 import { resolveProductImage } from '@/data/product-images';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useCart } from '@/contexts/CartContext';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -15,6 +16,7 @@ const ProductDetail = () => {
   const displayLang = language === 'es' ? 'en' : language;
   const { toast } = useToast();
   const { data: product, isLoading, isError } = useProduct(id);
+  const { addItem } = useCart();
 
   if (isLoading) {
     return (
@@ -50,6 +52,8 @@ const ProductDetail = () => {
   }
 
   const handleAddToCart = () => {
+    if (!product) return;
+    addItem(product, 1);
     toast({
       title: t('Добавлено в корзину', 'Added to cart', 'Añadido al carrito'),
       description: t(
