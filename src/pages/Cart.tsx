@@ -1,14 +1,26 @@
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { resolveProductImage } from '@/data/product-images';
 
 const Cart = () => {
+  const navigate = useNavigate();
   const { items, changeQty, removeItem, clear, totalItems, totalPrice } = useCart();
+  const { token } = useAuth();
   const { t, language } = useLanguage();
   const displayLang = language === 'es' ? 'en' : language;
+
+  const handleCheckout = () => {
+    if (!token) {
+      navigate('/register');
+    } else {
+      navigate('/checkout');
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -63,8 +75,8 @@ const Cart = () => {
                 <Button className="w-full mt-4" onClick={clear}>
                   {t('Очистить корзину', 'Clear cart', 'Vaciar carrito')}
                 </Button>
-                <Button className="w-full mt-3" variant="default" disabled>
-                  {t('Оформить заказ (скоро)', 'Checkout (soon)', 'Pagar (pronto)')}
+                <Button className="w-full mt-3" variant="default" onClick={handleCheckout}>
+                  {t('Оформить заказ', 'Checkout', 'Pagar')}
                 </Button>
               </aside>
             </div>

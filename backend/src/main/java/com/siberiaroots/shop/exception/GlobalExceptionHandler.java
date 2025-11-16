@@ -1,6 +1,7 @@
 package com.siberiaroots.shop.exception;
 
 import com.siberiaroots.shop.catalog.ProductNotFoundException;
+import com.siberiaroots.shop.order.OrderNotFoundException;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -26,6 +27,17 @@ public class GlobalExceptionHandler {
                         HttpStatus.NOT_FOUND.value(),
                         ex.getReason(),
                         "PRODUCT_NOT_FOUND"
+                ));
+    }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleOrderNotFound(OrderNotFoundException ex) {
+        log.debug("Order not found: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(
+                        HttpStatus.NOT_FOUND.value(),
+                        ex.getMessage(),
+                        "ORDER_NOT_FOUND"
                 ));
     }
 

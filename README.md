@@ -1,6 +1,6 @@
 # Siberia Roots Shop
 
-Modern React storefront for Siberian matryoshkas backed by a Java/Spring Boot API.
+Modern multilingual React storefront for Siberian matryoshkas and souvenirs, backed by a Java/Spring Boot API with email support, authentication, and shopping cart functionality.
 
 ## Prerequisites
 
@@ -20,10 +20,15 @@ mvn -f backend/pom.xml spring-boot:run
 
 ### API Endpoints
 
-| Method | Path               | Description                       |
-| ------ | ------------------ | --------------------------------- |
-| GET    | `/api/products`    | List all catalog products         |
-| GET    | `/api/products/:id`| Get a single product by identifier|
+| Method | Path                      | Description                                    |
+| ------ | ------------------------- | ---------------------------------------------- |
+| GET    | `/api/products`           | List all catalog products                      |
+| GET    | `/api/products/:id`       | Get a single product by identifier             |
+| POST   | `/api/contact`            | Send contact form message                      |
+| POST   | `/api/auth/register`      | Register new user                              |
+| POST   | `/api/auth/login`         | Login and receive auth token                   |
+| GET    | `/api/auth/verify`        | Verify email by token (if enabled)             |
+| GET    | `/actuator/contact-diagnostics` | Check email configuration (diagnostics)    |
 
 Swagger UI is available at `http://localhost:8090/api/swagger` once the service is running.
 
@@ -38,13 +43,36 @@ npm run dev            # runs on http://localhost:8080
 
 ### Environment Variables
 
-Create a `.env.local` (or reuse `.env`) in the project root if you need to override defaults:
+#### Frontend Variables
+
+Create a `.env.local` (or reuse `.env`) in the project root:
 
 ```
 VITE_API_BASE_URL=http://localhost:8090
 ```
 
 The value should point to the running backend.
+
+#### Backend Variables
+
+Configure the following environment variables for production (e.g., on Render):
+
+**Email Configuration (SMTP):**
+- `SMTP_HOST` - SMTP server (e.g., `smtp.gmail.com`)
+- `SMTP_PORT` - SMTP port (e.g., `465` for SSL or `587` for STARTTLS)
+- `SMTP_USERNAME` - Your email address
+- `SMTP_PASSWORD` - App Password (for Gmail, use App Password, not regular password)
+- `SMTP_AUTH` - Set to `true`
+- `SMTP_SSL` - Set to `true` for port 465
+- `SMTP_STARTTLS` - Set to `true` for port 587
+- `MAIL_FROM` - Sender email address
+- `MAIL_TO` - Recipient email address for contact form (optional, defaults to `MAIL_FROM`)
+- `APP_CONTACT_STRICT` - Set to `true` to return 500 on email failures (default: `false`)
+
+**Application:**
+- `PORT` - Server port (default: `8090`)
+- `APP_BASE_URL` - Application base URL for email links
+- `AUTH_EMAIL_VERIFICATION` - Enable email verification (default: `false`)
 
 ## Development Workflow
 
@@ -56,9 +84,26 @@ React Query caches catalog data automatically. If you change backend data, refre
 
 ## Testing
 
-- Backend: `mvn -f backend/pom.xml test`
-  - Coverage includes the integration suite `ProductControllerTest`, which verifies `/api/products` and `/api/products/{id}`.
-- Frontend: no tests yet; Vitest or Playwright are recommended when you add them.
+### Backend Tests
+
+```sh
+mvn -f backend/pom.xml test
+```
+
+**Test Coverage:**
+- Unit tests for services (`ProductService`, `AuthService`, `ContactService`)
+- Integration tests for controllers (`ProductController`, `AuthController`, `ContactController`)
+- Coverage report: `backend/target/site/jacoco/index.html`
+
+**Run with coverage report:**
+```sh
+mvn -f backend/pom.xml clean test jacoco:report
+# View: backend/target/site/jacoco/index.html
+```
+
+### Frontend Tests
+
+No tests yet; Vitest or Playwright are recommended when you add them.
 
 ## Docker
 
@@ -95,13 +140,41 @@ npm run build
 npm run preview
 ```
 
+## Features
+
+- 🌍 **Multilingual Support**: Russian, English, and Spanish
+- 🛒 **Shopping Cart**: Add items, manage quantities, view totals
+- 👤 **User Registration & Login**: In-memory authentication (demo)
+- 📧 **Contact Form**: Send messages with email notifications
+- 📦 **Product Catalog**: RESTful API with localized product data
+- 🎨 **Modern UI**: React with Tailwind CSS and shadcn/ui components
+- 🐳 **Docker Support**: Full Docker Compose setup
+- ✅ **Tests**: Unit and integration tests with code coverage
+- 🔒 **Error Handling**: Structured exception handling with global handler
+
 ## Project Structure
 
 ```
-backend/        # Spring Boot application (API and tests)
-src/            # Vite/React frontend
-docker-compose.yml
-Dockerfile      # production frontend build (Nginx)
+backend/
+  src/main/java/com/siberiaroots/shop/
+    api/              # REST controllers (Product, Auth, Contact)
+    auth/             # Authentication service & DTOs
+    catalog/          # Product catalog & service
+    contact/          # Contact form service
+    config/           # CORS & web configuration
+    exception/        # Custom exceptions & global handler
+  src/test/java/      # Unit & integration tests
+  src/main/resources/
+    application.properties
+
+src/
+  components/         # React components (Header, ProductCard, Footer)
+  contexts/           # React contexts (Language, Cart, Auth)
+  hooks/              # Custom hooks (useProducts)
+  lib/                # API client & utilities
+  pages/              # Page components (Home, Products, Cart, etc.)
+  types/              # TypeScript type definitions
+  data/               # Static data (product images mapping)
 ```
 
 ## Updating Catalog Data
@@ -109,8 +182,44 @@ Dockerfile      # production frontend build (Nginx)
 - Catalog data lives in `backend/src/main/java/com/siberiaroots/shop/catalog/ProductCatalog.java`.
 - The frontend resolves product imagery via `imageKey` in `src/data/product-images.ts`. When you add a new product, import the asset and map the key.
 
+## Deployment
+
+### Render (Backend)
+
+1. Connect your GitHub repository
+2. Set **Root Directory** to `backend`
+3. Build command: `mvn clean package`
+4. Start command: `java -jar target/*.jar`
+5. Set environment variables (see **Backend Variables** above)
+6. Deploy!
+
+### Vercel (Frontend)
+
+1. Connect your GitHub repository
+2. Root directory: `/` (repository root)
+3. Build command: `npm run build`
+4. Output directory: `dist`
+5. Set environment variable: `VITE_API_BASE_URL=https://your-backend.onrender.com`
+6. Deploy!
+
+**Note:** The frontend uses HashRouter to avoid 404s on refresh. For BrowserRouter, configure Vercel rewrites in `vercel.json`.
+
 ## Troubleshooting
 
+### Frontend Issues
+
 - **`npm run lint` fails:** run `npm install` first, then re-run lint.
-- **Maven cannot download dependencies:** ensure write permissions to `~/.m2`; in CI set a custom Maven repo directory via `MAVEN_OPTS`.
 - **Frontend cannot reach the API in Docker:** verify `VITE_API_BASE_URL` or the build arg. In `docker-compose.yml` it defaults to `http://backend:8090`.
+- **404 on page refresh:** Using HashRouter prevents this. If using BrowserRouter, ensure server rewrites are configured.
+
+### Backend Issues
+
+- **Maven cannot download dependencies:** ensure write permissions to `~/.m2`; in CI set a custom Maven repo directory via `MAVEN_OPTS`.
+- **Contact form emails not arriving:**
+  - Check logs on Render for SMTP errors
+  - Verify `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD` are set correctly
+  - For Gmail: use an **App Password**, not your regular password
+  - Check email diagnostics: `https://your-backend.onrender.com/actuator/contact-diagnostics`
+  - Ensure `MAIL_TO` is set if you want messages forwarded to a specific address
+  - By default, contact form returns `202 Accepted` even if email fails (soft mode); check logs for details
+- **Authentication not working:** Verify `AUTH_EMAIL_VERIFICATION` is set correctly. Email verification is optional and disabled by default.

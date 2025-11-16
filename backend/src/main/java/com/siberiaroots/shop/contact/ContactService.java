@@ -26,13 +26,17 @@ public class ContactService {
         this.mailFrom = mailFrom;
         this.mailTo = mailTo;
         this.strictMode = strictMode;
+        log.info("ContactService initialized: from={}, to={}, strict={}", mailFrom, mailTo.isBlank() ? mailFrom : mailTo, strictMode);
     }
 
     public ResponseEntity<Void> send(ContactRequest request) {
         try {
+            String recipient = mailTo.isBlank() ? mailFrom : mailTo;
+            log.info("Sending contact form message from {} ({}) to {}", request.name(), request.email(), recipient);
+            
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(mailFrom);
-            message.setTo(mailTo.isBlank() ? mailFrom : mailTo);
+            message.setTo(recipient);
             message.setSubject("[Siberia Roots Shop] New contact message from " + request.name());
             message.setText("""
                     Name: %s
@@ -42,6 +46,7 @@ public class ContactService {
                     %s
                     """.formatted(request.name(), request.email(), request.message()));
             mailSender.send(message);
+            log.info("Contact message sent successfully to {}", recipient);
 
             // Auto-acknowledgement to the sender
             if (request.email() != null && !request.email().isBlank()) {
@@ -51,6 +56,7 @@ public class ContactService {
                 ack.setSubject("We received your message");
                 ack.setText("Thank you, we received your message and will get back to you soon.");
                 mailSender.send(ack);
+                log.info("Auto-acknowledgement sent to {}", request.email());
             }
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception ex) {

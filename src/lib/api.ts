@@ -19,12 +19,18 @@ class ApiError extends Error {
   }
 }
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
+async function request<T>(path: string, init?: RequestInit, token?: string | null): Promise<T> {
+  const headers: HeadersInit = {
+    ...DEFAULT_HEADERS,
+    ...init?.headers,
+  };
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  
   const response = await fetch(`${API_BASE_URL}${path}`, {
-    headers: {
-      ...DEFAULT_HEADERS,
-      ...init?.headers,
-    },
+    headers,
     ...init,
   });
 
@@ -43,7 +49,14 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  getProducts: () => request<Product[]>('/api/products'),
+  getProducts: (filters?: { category?: string; minPrice?: number; maxPrice?: number }, token?: string | null) => {
+    const params = new URLSearchParams();
+    if (filters?.category) params.append('category', filters.category);
+    if (filters?.minPrice != null) params.append('minPrice', filters.minPrice.toString());
+    if (filters?.maxPrice != null) params.append('maxPrice', filters.maxPrice.toString());
+    const query = params.toString();
+    return request<Product[]>(`/api/products${query ? '?' + query : ''}`, undefined, token);
+  },
   getProduct: (id: string) => request<Product>(`/api/products/${id}`),
   sendContact: (data: { name: string; email: string; message: string }) =>
     request<void>('/api/contact', {
@@ -63,7 +76,42 @@ export const api = {
       headers: JSON_HEADERS,
       body: JSON.stringify(data),
     }),
+  createOrder: (data: {
+    items: Array<{ productId: string; quantity: number }>;
+    shippingName: string;
+    shippingEmail: string;
+    shippingAddress: string;
+    shippingCity: string;
+    shippingZip: string;
+  }, token: string) =>
+    request<OrderResponse>('/api/orders', {
+      method: 'POST',
+      headers: JSON_HEADERS,
+      body: JSON.stringify(data),
+    }, token),
+  getUserOrders: (token: string) =>
+    request<OrderResponse[]>('/api/orders', undefined, token),
+  getOrder: (id: string, token: string) =>
+    request<OrderResponse>(`/api/orders/${id}`, undefined, token),
 };
+
+export interface OrderResponse {
+  id: string;
+  items: Array<{
+    productId: string;
+    productName: string;
+    price: number;
+    quantity: number;
+  }>;
+  shippingName: string;
+  shippingEmail: string;
+  shippingAddress: string;
+  shippingCity: string;
+  shippingZip: string;
+  total: number;
+  status: string;
+  createdAt: string;
+}
 
 export type { ApiError };
 

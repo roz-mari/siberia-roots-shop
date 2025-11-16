@@ -1,14 +1,15 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { ShoppingBag, Globe, ShoppingCart } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
-import { Link as RouterLink } from 'react-router-dom';
 
 const Header = () => {
   const { language, setLanguage, t } = useLanguage();
   const nextLang = language === 'ru' ? 'en' : language === 'en' ? 'es' : 'ru';
   const { totalItems } = useCart();
+  const { token } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
@@ -34,12 +35,21 @@ const Header = () => {
             >
               {t('Товары', 'Products', 'Productos')}
             </Link>
-            <Link
-              to="/register"
-              className="text-sm font-medium text-foreground hover:text-primary transition-colors"
-            >
-              {t('Регистрация', 'Register', 'Registrarse')}
-            </Link>
+            {token ? (
+              <Link
+                to="/profile"
+                className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+              >
+                {t('Профиль', 'Profile', 'Perfil')}
+              </Link>
+            ) : (
+              <Link
+                to="/register"
+                className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+              >
+                {t('Регистрация', 'Register', 'Registrarse')}
+              </Link>
+            )}
             <Link
               to="/contact"
               className="text-sm font-medium text-foreground hover:text-primary transition-colors"

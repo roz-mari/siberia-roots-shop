@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -19,19 +20,22 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AuthService {
     private final PasswordEncoder encoder = new BCryptPasswordEncoder();
     private final Map<String, UserAccount> emailToUser = new ConcurrentHashMap<>();
-    private final Map<String, String> tokenToUserId = new ConcurrentHashMap<>();
+    private final Map<String, UserAccount> idToUser = new ConcurrentHashMap<>();
     private final Map<String, String> verifyTokenToEmail = new ConcurrentHashMap<>();
 
     private final JavaMailSender mailSender;
+    private final JwtService jwtService;
     private final String mailFrom;
     private final String appBaseUrl;
     private final boolean emailVerification;
 
     public AuthService(JavaMailSender mailSender,
+                       JwtService jwtService,
                        @Value("${app.mail.from:no-reply@siberia-roots.local}") String mailFrom,
                        @Value("${app.base-url:https://siberia-roots-shop.onrender.com}") String appBaseUrl,
                        @Value("${app.auth.emailVerification:false}") boolean emailVerification) {
         this.mailSender = mailSender;
+        this.jwtService = jwtService;
         this.mailFrom = mailFrom;
         this.appBaseUrl = appBaseUrl;
         this.emailVerification = emailVerification;
@@ -47,6 +51,7 @@ public class AuthService {
         boolean verified = !emailVerification;
         UserAccount user = new UserAccount(id, email, hash, verified, verifyToken);
         emailToUser.put(email, user);
+        idToUser.put(id, user);
         if (emailVerification) {
             verifyTokenToEmail.put(verifyToken, email);
             try {
@@ -55,7 +60,7 @@ public class AuthService {
                 // If email can't be sent, keep user unverified but still allow registration to complete.
             }
         }
-        return issueToken(user);
+        return jwtService.generateToken(user.id(), user.email());
     }
 
     public String login(String email, String rawPassword) {
@@ -63,7 +68,7 @@ public class AuthService {
         if (user == null || !encoder.matches(rawPassword, user.passwordHash())) {
             throw new InvalidCredentialsException();
         }
-        return issueToken(user);
+        return jwtService.generateToken(user.id(), user.email());
     }
 
     public void verify(String token) {
@@ -77,12 +82,23 @@ public class AuthService {
         }
         UserAccount verified = new UserAccount(u.id(), u.email(), u.passwordHash(), true, null);
         emailToUser.put(email, verified);
+        idToUser.put(u.id(), verified);
     }
 
-    private String issueToken(UserAccount user) {
-        String token = UUID.randomUUID().toString();
-        tokenToUserId.put(token, user.id());
-        return token;
+    public Optional<UserAccount> validateToken(String token) {
+        try {
+            String userId = jwtService.extractUserId(token);
+            if (jwtService.validateToken(token, userId)) {
+                return Optional.ofNullable(idToUser.get(userId));
+            }
+        } catch (Exception e) {
+            // Invalid token
+        }
+        return Optional.empty();
+    }
+
+    public Optional<UserAccount> getUserById(String userId) {
+        return Optional.ofNullable(idToUser.get(userId));
     }
 
     private void sendVerificationEmail(String to, String token) {
