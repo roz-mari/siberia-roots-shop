@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { api } from '@/lib/api';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Mail, MapPin, Phone } from 'lucide-react';
@@ -18,20 +19,35 @@ const Contact = () => {
     email: '',
     message: '',
   });
+  const [isSending, setIsSending] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    toast({
-      title: t('Сообщение отправлено!', 'Message sent!', '¡Mensaje enviado!'),
-      description: t(
-        'Мы свяжемся с вами в ближайшее время.',
-        'We will contact you as soon as possible.',
-        'Nos pondremos en contacto contigo lo antes posible.'
-      ),
-    });
-
-    setFormData({ name: '', email: '', message: '' });
+    try {
+      setIsSending(true);
+      await api.sendContact(formData);
+      toast({
+        title: t('Сообщение отправлено!', 'Message sent!', '¡Mensaje enviado!'),
+        description: t(
+          'Мы свяжемся с вами в ближайшее время.',
+          'We will contact you as soon as possible.',
+          'Nos pondremos en contacto contigo lo antes posible.'
+        ),
+      });
+      setFormData({ name: '', email: '', message: '' });
+    } catch (err) {
+      toast({
+        title: t('Ошибка отправки', 'Send error', 'Error de envío'),
+        description: t(
+          'Не удалось отправить сообщение. Попробуйте ещё раз позже.',
+          'Failed to send message. Please try again later.',
+          'No se pudo enviar el mensaje. Inténtalo más tarde.'
+        ),
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -121,8 +137,8 @@ const Contact = () => {
                     />
                   </div>
 
-                  <Button type="submit" className="w-full" size="lg">
-                    {t('Отправить', 'Send', 'Enviar')}
+                  <Button type="submit" className="w-full" size="lg" disabled={isSending}>
+                    {isSending ? t('Отправка...', 'Sending...', 'Enviando...') : t('Отправить', 'Send', 'Enviar')}
                   </Button>
                 </form>
               </CardContent>

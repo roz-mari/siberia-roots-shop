@@ -30,6 +30,12 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 export const api = {
   getProducts: () => request<Product[]>('/api/products'),
   getProduct: (id: string) => request<Product>(`/api/products/${id}`),
+  sendContact: (data: { name: string; email: string; message: string }) =>
+    request<void>('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    }),
 };
 
 export type { ApiError };
