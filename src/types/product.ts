@@ -1,6 +1,7 @@
 export interface LocalizedText {
   ru: string;
   en: string;
+  es?: string;
 }
 
 export interface Product {
