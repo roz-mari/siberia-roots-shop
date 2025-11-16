@@ -23,8 +23,7 @@ public class ContactController {
     @Operation(summary = "Send contact message")
     @PostMapping
     public ResponseEntity<Void> send(@Valid @RequestBody ContactRequest request) {
-        contactService.send(request);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return contactService.send(request);
     }
 }
 
