@@ -11,6 +11,9 @@ export const useProducts = (filters?: { category?: string; minPrice?: number; ma
     queryKey: [...PRODUCTS_QUERY_KEY, filters],
     queryFn: () => api.getProducts(filters, token),
     staleTime: 1000 * 60 * 5,
+    retry: 3, // Retry 3 times on failure
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+    refetchOnWindowFocus: true, // Refetch when window regains focus
   });
 };
 

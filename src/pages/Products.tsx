@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import ProductCard from '@/components/ProductCard';
 import Header from '@/components/Header';
@@ -7,7 +8,16 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const Products = () => {
   const { t } = useLanguage();
-  const { data: products, isLoading, isError } = useProducts();
+  const { data: products, isLoading, isError, error, refetch } = useProducts();
+
+  useEffect(() => {
+    // Debug: Log API configuration
+    const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8090';
+    console.log('🔍 API Base URL:', apiUrl);
+    if (isError) {
+      console.error('❌ Error loading products:', error);
+    }
+  }, [isError, error]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -35,8 +45,24 @@ const Products = () => {
               ))}
 
             {isError && (
-              <div className="col-span-full text-center text-muted-foreground">
-                {t('Не удалось загрузить товары. Попробуйте позже.', 'Failed to load products. Please try again later.', 'No se pudieron cargar los productos. Inténtalo más tarde.')}
+              <div className="col-span-full text-center space-y-4">
+                <div className="text-muted-foreground mb-4">
+                  {t('Не удалось загрузить товары. Попробуйте позже.', 'Failed to load products. Please try again later.', 'No se pudieron cargar los productos. Inténtalo más tarde.')}
+                </div>
+                <div className="flex gap-3 justify-center">
+                  <button
+                    onClick={() => refetch()}
+                    className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+                  >
+                    {t('Попробовать снова', 'Try again', 'Intentar de nuevo')}
+                  </button>
+                  <button
+                    onClick={() => window.location.reload()}
+                    className="px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/90 transition-colors"
+                  >
+                    {t('Обновить страницу', 'Refresh page', 'Actualizar página')}
+                  </button>
+                </div>
               </div>
             )}
 

@@ -2,6 +2,11 @@ import type { Product } from '@/types/product';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8090';
 
+// Debug: Log API URL
+if (typeof window !== 'undefined') {
+  console.log('🔧 API Base URL:', API_BASE_URL);
+}
+
 const DEFAULT_HEADERS = {
   Accept: 'application/json',
 } as const;
@@ -29,23 +34,36 @@ async function request<T>(path: string, init?: RequestInit, token?: string | nul
     headers['Authorization'] = `Bearer ${token}`;
   }
   
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    headers,
-    ...init,
-  });
+  try {
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+      headers,
+      ...init,
+      signal: AbortSignal.timeout(30000), // 30 second timeout
+    });
 
-  if (!response.ok) {
-    const text = await response.text();
-    throw new ApiError(response.status, text || response.statusText);
+    if (!response.ok) {
+      const text = await response.text();
+      throw new ApiError(response.status, text || response.statusText);
+    }
+
+    // Handle empty responses (204 No Content, 202 Accepted)
+    const contentType = response.headers.get('content-type');
+    if (response.status === 204 || response.status === 202 || !contentType?.includes('application/json')) {
+      return undefined as T;
+    }
+
+    return response.json() as Promise<T>;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    if (error instanceof TypeError && (error.message.includes('fetch') || error.message.includes('Failed to fetch'))) {
+      // Network error - likely backend is down or CORS issue
+      throw new ApiError(0, `Network error: Unable to reach backend at ${API_BASE_URL}. The service may be starting up. Please wait 30-60 seconds and try again.`);
+    }
+    // Re-throw other errors
+    throw error;
   }
-
-  // Handle empty responses (204 No Content, 202 Accepted)
-  const contentType = response.headers.get('content-type');
-  if (response.status === 204 || response.status === 202 || !contentType?.includes('application/json')) {
-    return undefined as T;
-  }
-
-  return response.json() as Promise<T>;
 }
 
 export const api = {
@@ -55,7 +73,9 @@ export const api = {
     if (filters?.minPrice != null) params.append('minPrice', filters.minPrice.toString());
     if (filters?.maxPrice != null) params.append('maxPrice', filters.maxPrice.toString());
     const query = params.toString();
-    return request<Product[]>(`/api/products${query ? '?' + query : ''}`, undefined, token);
+    const url = `/api/products${query ? '?' + query : ''}`;
+    console.log('📡 Fetching products from:', `${API_BASE_URL}${url}`);
+    return request<Product[]>(url, undefined, token);
   },
   getProduct: (id: string) => request<Product>(`/api/products/${id}`),
   sendContact: (data: { name: string; email: string; message: string }) =>

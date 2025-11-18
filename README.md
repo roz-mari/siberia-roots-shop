@@ -188,10 +188,13 @@ src/
 
 1. Connect your GitHub repository
 2. Set **Root Directory** to `backend`
-3. Build command: `mvn clean package`
+3. Build command: `mvn clean package -DskipTests` (skip tests for faster deployment)
 4. Start command: `java -jar target/*.jar`
 5. Set environment variables (see **Backend Variables** above)
-6. Deploy!
+6. **Important:** On free tier, build timeout is limited. If build times out:
+   - Use `mvn clean package -DskipTests` instead of running tests
+   - Consider upgrading to paid plan for longer build times
+7. Deploy!
 
 ### Vercel (Frontend)
 
