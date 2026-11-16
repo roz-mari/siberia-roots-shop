@@ -1,6 +1,30 @@
 # Siberia Roots Shop
 
-Modern multilingual React storefront for Siberian matryoshkas and souvenirs, backed by a Java/Spring Boot API with email support, authentication, and shopping cart functionality.
+Multilingual online store (Russian, English, Spanish) for Siberian matryoshkas and souvenirs. A React and TypeScript storefront talks to a Spring Boot REST API with JWT authentication, a shopping cart, orders and email notifications.
+
+**Live demo:** https://siberia-roots-shop.vercel.app
+The backend runs on a free Render instance, so the first request after a pause can take up to a minute.
+
+## How this project was built
+
+The first version of the frontend UI (layout and shadcn/ui components) was generated with [Lovable](https://lovable.dev). On top of it I built:
+
+- the **Spring Boot backend**: product catalog API with filters, JWT authentication, orders, contact form with email, global error handling
+- the **connection between frontend and backend**: typed API client, React Query hooks, CORS and environment configuration
+- **application state**: cart, authentication and language contexts with `localStorage` persistence
+- **tests**: 34 backend tests (JUnit, Mockito, JaCoCo) and frontend tests (Vitest, React Testing Library) running in GitHub Actions
+- **infrastructure**: Docker Compose, deployment to Vercel and Render
+
+More details on the challenges and how I solved them: [PROJECT_REPORT.md](PROJECT_REPORT.md).
+
+## Tech Stack
+
+| Layer | Technologies |
+| --- | --- |
+| Frontend | React 18, TypeScript, Vite, React Router, React Query, Tailwind CSS, shadcn/ui |
+| Backend | Java 17, Spring Boot 3.3, JWT, Spring Mail, Bean Validation |
+| Testing | JUnit 5, Mockito, JaCoCo, Vitest, React Testing Library |
+| Infrastructure | Docker, Docker Compose, Vercel, Render, GitHub Actions |
 
 ## Prerequisites
 
@@ -103,7 +127,12 @@ mvn -f backend/pom.xml clean test jacoco:report
 
 ### Frontend Tests
 
-No tests yet; Vitest or Playwright are recommended when you add them.
+```sh
+npm test            # run once
+npm run test:watch  # watch mode
+```
+
+Vitest and React Testing Library cover the cart and language contexts, the `ProductCard` component and the translation helper. The tests also run in GitHub Actions on every push and pull request.
 
 ## Docker
 
@@ -149,7 +178,7 @@ npm run preview
 - 📦 **Product Catalog**: RESTful API with localized product data
 - 🎨 **Modern UI**: React with Tailwind CSS and shadcn/ui components
 - 🐳 **Docker Support**: Full Docker Compose setup
-- ✅ **Tests**: Unit and integration tests with code coverage
+- ✅ **Tests**: Backend unit and integration tests with coverage, frontend tests with Vitest
 - 🔒 **Error Handling**: Structured exception handling with global handler
 
 ## Project Structure

@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { dateLocale } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
 import { api, type OrderResponse, type ApiError } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
@@ -50,7 +51,6 @@ const Profile = () => {
     return null;
   }
 
-  const displayLang = language === 'es' ? 'en' : language;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -89,7 +89,7 @@ const Profile = () => {
                           {t('Заказ №', 'Order #', 'Pedido #')}{order.id.slice(0, 8)}
                         </h3>
                         <p className="text-sm text-muted-foreground">
-                          {new Date(order.createdAt).toLocaleDateString(displayLang === 'ru' ? 'ru-RU' : displayLang === 'es' ? 'es-ES' : 'en-US')}
+                          {new Date(order.createdAt).toLocaleDateString(dateLocale[language])}
                         </p>
                       </div>
                       <div className="text-right">
