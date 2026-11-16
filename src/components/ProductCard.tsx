@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import type { Product } from '@/types/product';
+import { localize } from '@/lib/i18n';
 import { resolveProductImage } from '@/data/product-images';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,7 +12,6 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const { language } = useLanguage();
-  const displayLang = language === 'es' ? 'en' : language;
   const imageSrc = resolveProductImage(product.imageKey);
 
   return (
@@ -20,7 +20,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <div className="aspect-square overflow-hidden bg-secondary">
           <img
             src={imageSrc}
-            alt={product.name[displayLang]}
+            alt={localize(product.name, language)}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
           />
         </div>
@@ -28,12 +28,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
       <CardContent className="p-4">
         <Link to={`/products/${product.id}`}>
           <h3 className="text-lg font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">
-            {product.name[displayLang]}
+            {localize(product.name, language)}
           </h3>
         </Link>
-        <p className="text-sm text-muted-foreground mb-2">{product.category[displayLang]}</p>
+        <p className="text-sm text-muted-foreground mb-2">{localize(product.category, language)}</p>
         <p className="text-sm text-muted-foreground line-clamp-2">
-          {product.description[displayLang]}
+          {localize(product.description, language)}
         </p>
       </CardContent>
       <CardFooter className="p-4 pt-0 flex items-center justify-between">

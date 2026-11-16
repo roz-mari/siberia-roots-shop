@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { localize } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ShoppingCart } from 'lucide-react';
 import Header from '@/components/Header';
@@ -13,7 +14,6 @@ import { useCart } from '@/contexts/CartContext';
 const ProductDetail = () => {
   const { id } = useParams();
   const { language, t } = useLanguage();
-  const displayLang = language === 'es' ? 'en' : language;
   const { toast } = useToast();
   const { data: product, isLoading, isError } = useProduct(id);
   const { addItem } = useCart();
@@ -84,7 +84,7 @@ const ProductDetail = () => {
             <div className="aspect-square rounded-2xl overflow-hidden bg-secondary">
               <img
                 src={imageSrc}
-                alt={product.name[displayLang]}
+                alt={localize(product.name, language)}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -93,16 +93,16 @@ const ProductDetail = () => {
             <div className="flex flex-col">
               <div className="mb-4">
                 <span className="inline-block px-3 py-1 rounded-full text-sm font-medium bg-secondary text-secondary-foreground">
-                  {product.category[displayLang]}
+                  {localize(product.category, language)}
                 </span>
               </div>
               
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                {product.name[displayLang]}
+                {localize(product.name, language)}
               </h1>
               
               <p className="text-xl text-muted-foreground mb-8">
-                {product.description[displayLang]}
+                {localize(product.description, language)}
               </p>
               
               <div className="mb-8">

@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { localize } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,7 +16,7 @@ const Checkout = () => {
   const navigate = useNavigate();
   const { items, totalPrice, clear } = useCart();
   const { token } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -167,11 +168,10 @@ const Checkout = () => {
               </h2>
               <div className="space-y-2 mb-4">
                 {items.map((i) => {
-                  const displayLang = language === 'es' ? 'en' : language;
                   return (
                     <div key={i.product.id} className="flex justify-between text-sm">
                       <span>
-                        {i.product.name[displayLang]} × {i.quantity}
+                        {localize(i.product.name, language)} × {i.quantity}
                       </span>
                       <span>${(i.product.price * i.quantity).toFixed(2)}</span>
                     </div>

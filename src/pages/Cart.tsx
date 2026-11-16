@@ -5,6 +5,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { localize } from '@/lib/i18n';
 import { resolveProductImage } from '@/data/product-images';
 
 const Cart = () => {
@@ -12,7 +13,6 @@ const Cart = () => {
   const { items, changeQty, removeItem, clear, totalItems, totalPrice } = useCart();
   const { token } = useAuth();
   const { t, language } = useLanguage();
-  const displayLang = language === 'es' ? 'en' : language;
 
   const handleCheckout = () => {
     if (!token) {
@@ -45,11 +45,11 @@ const Cart = () => {
                   >
                     <img
                       src={resolveProductImage(i.product.imageKey)}
-                      alt={i.product.name[displayLang]}
+                      alt={localize(i.product.name, language)}
                       className="h-20 w-20 object-cover rounded-lg"
                     />
                     <div className="flex-1">
-                      <div className="font-semibold">{i.product.name[displayLang]}</div>
+                      <div className="font-semibold">{localize(i.product.name, language)}</div>
                       <div className="text-sm text-muted-foreground">
                         ${i.product.price.toFixed(2)}
                       </div>
